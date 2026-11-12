@@ -3,42 +3,104 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>めるぷちオーディション エントリーフォーム</title>
+  <title>めるぷちオーディション2027 エントリー</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&display=swap');
     
-    :root { --primary-pink: #e6005c; --accent-red: #ff3366; --bg-light: #fff5f7; --card-bg: #ffffff; --text-main: #333333; --border-color: #ffccd5; }
+    :root { 
+      --primary-pink: #ff52a2; /* めるぷちピンク */
+      --accent-cyan: #00d4d4;  /* めるぷち水色 */
+      --bg-top: #e6fcff;       /* 背景グラデーション上 */
+      --bg-bottom: #ffeaf3;    /* 背景グラデーション下 */
+      --card-bg: #ffffff; 
+      --text-main: #4a4a4a; 
+      --border-color: #bdf2f2; 
+    }
+    
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background-color: var(--bg-light); background-image: radial-gradient(circle at 50% 0%, #ffe6eb 0%, var(--bg-light) 100%); color: var(--text-main); font-family: 'Noto Sans JP', sans-serif; min-height: 100vh; padding: 20px 16px 40px; }
+    
+    body { 
+      background: linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%); 
+      background-attachment: fixed;
+      color: var(--text-main); 
+      font-family: 'Noto Sans JP', sans-serif; 
+      min-height: 100vh; 
+      padding: 16px 16px 50px; 
+    }
+
+    /* ▼ 追加：トップ画像のスタイル */
     .hero-header { text-align: center; margin-bottom: 20px; }
-    .badge { display: inline-block; background: linear-gradient(90deg, var(--primary-pink), var(--accent-red)); color: #fff; font-size: 0.75rem; font-weight: 900; padding: 4px 14px; border-radius: 20px; letter-spacing: 1px; margin-bottom: 8px; }
-    .main-title { font-size: 1.4rem; font-weight: 900; color: var(--primary-pink); line-height: 1.3; }
-    .form-card { background: var(--card-bg); border: 2px solid var(--border-color); border-radius: 16px; padding: 24px 18px; box-shadow: 0 10px 25px rgba(230, 0, 92, 0.08); width: 100%; max-width: 500px; margin: 0 auto; }
-    .status-bar { text-align: center; background: #fff0f3; color: var(--primary-pink); padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 0.85rem; border: 1px solid var(--border-color); font-weight: 700; }
-    .form-group { margin-bottom: 20px; width: 100%; }
-    label { display: flex; align-items: center; font-size: 0.85rem; font-weight: 700; color: #444; margin-bottom: 8px; }
-    .req { background: var(--primary-pink); color: #fff; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; margin-left: 8px; }
-    .opt { background: #aaa; color: #fff; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; margin-left: 8px; }
-    input[type="text"], input[type="date"] { width: 100%; max-width: 100%; -webkit-appearance: none; appearance: none; background: #fafafa; border: 1px solid var(--border-color); border-radius: 8px; padding: 12px; color: #333; font-size: 1rem; outline: none; font-family: inherit; box-sizing: border-box; min-height: 48px; }
-    input[type="text"]:focus, input[type="date"]:focus { border-color: var(--primary-pink); background: #fff; }
-    .radio-group { display: flex; gap: 10px; width: 100%; }
-    .radio-btn { flex: 1; display: flex; align-items: center; justify-content: center; background: #fafafa; border: 1px solid var(--border-color); padding: 12px 0; border-radius: 8px; cursor: pointer; font-size: 0.9rem; color: #666; font-weight: 700; min-height: 48px; text-align: center; }
+    .header-image {
+      width: 100%;
+      max-width: 500px;
+      border-radius: 20px;
+      box-shadow: 0 6px 15px rgba(0, 212, 212, 0.15);
+    }
+
+    /* ▼ フォーム全体のポップな枠線 */
+    .form-card { 
+      background: var(--card-bg); 
+      border: 3px solid var(--accent-cyan); 
+      border-radius: 24px; 
+      padding: 24px 18px; 
+      box-shadow: 0 8px 0 var(--accent-cyan); /* ポップな立体感 */
+      width: 100%; 
+      max-width: 500px; 
+      margin: 0 auto; 
+    }
+
+    .status-bar { text-align: center; background: #fff0f5; color: var(--primary-pink); padding: 12px; border-radius: 12px; margin-bottom: 24px; font-size: 0.9rem; border: 2px dashed var(--primary-pink); font-weight: 900; }
+    .form-group { margin-bottom: 24px; width: 100%; }
+    label { display: flex; align-items: center; font-size: 0.9rem; font-weight: 900; color: #555; margin-bottom: 10px; }
+    
+    .req { background: var(--primary-pink); color: #fff; font-size: 0.65rem; padding: 3px 8px; border-radius: 12px; margin-left: 8px; }
+    .opt { background: var(--accent-cyan); color: #fff; font-size: 0.65rem; padding: 3px 8px; border-radius: 12px; margin-left: 8px; }
+    
+    input[type="text"], input[type="date"] { 
+      width: 100%; max-width: 100%; -webkit-appearance: none; appearance: none; 
+      background: #fafafa; border: 2px solid #e0e0e0; border-radius: 12px; padding: 14px; 
+      color: #333; font-size: 1rem; outline: none; font-family: inherit; font-weight: 700;
+    }
+    input[type="text"]:focus, input[type="date"]:focus { 
+      border-color: var(--accent-cyan); background: #fff; box-shadow: 0 0 0 3px rgba(0, 212, 212, 0.1); 
+    }
+
+    .radio-group { display: flex; gap: 12px; width: 100%; }
+    .radio-btn { 
+      flex: 1; display: flex; align-items: center; justify-content: center; 
+      background: #fafafa; border: 2px solid #e0e0e0; padding: 14px 0; 
+      border-radius: 12px; cursor: pointer; font-size: 0.95rem; color: #666; font-weight: 900; 
+      transition: 0.2s;
+    }
     .radio-btn input { display: none; }
-    .radio-btn:has(input:checked) { background: var(--primary-pink); border-color: var(--primary-pink); color: #fff; }
+    .radio-btn:has(input:checked) { 
+      background: var(--primary-pink); border-color: var(--primary-pink); color: #fff; 
+      box-shadow: 0 4px 10px rgba(255, 82, 162, 0.3);
+    }
     #agencyNameGroup { display: none; }
-    .submit-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary-pink) 0%, var(--accent-red) 100%); border: none; border-radius: 30px; color: #fff; font-size: 1.1rem; font-weight: 900; letter-spacing: 1px; cursor: pointer; box-shadow: 0 4px 15px rgba(230, 0, 92, 0.3); margin-top: 10px; }
+
+    .submit-btn { 
+      width: 100%; padding: 18px; 
+      background: linear-gradient(135deg, #ff7eb3 0%, var(--primary-pink) 100%); 
+      border: none; border-radius: 40px; color: #fff; font-size: 1.2rem; font-weight: 900; 
+      letter-spacing: 2px; cursor: pointer; 
+      box-shadow: 0 6px 15px rgba(255, 82, 162, 0.4); margin-top: 10px; 
+      transition: 0.2s;
+    }
+    .submit-btn:active { transform: translateY(2px); box-shadow: 0 2px 5px rgba(255, 82, 162, 0.4); }
+    
     .loading { display: none; text-align: center; color: var(--primary-pink); margin-top: 12px; font-size: 0.95rem; font-weight: bold; }
     .already-submitted { display: none; text-align: center; padding: 30px 10px; }
     .already-submitted h2 { color: var(--primary-pink); font-size: 1.3rem; margin-bottom: 12px; }
-    .already-submitted p { color: #666; font-size: 0.9rem; line-height: 1.6; }
+    .already-submitted p { color: #666; font-size: 0.9rem; line-height: 1.6; font-weight: 700;}
   </style>
 </head>
 <body>
 
+  <!-- トップ画像 -->
   <div class="hero-header">
-    <div class="badge">第14回</div>
-    <h1 class="main-title">めるぷちオーディション2027<br>エントリー登録</h1>
+    <img src="めるぷち2027オーディション案内.png" alt="めるぷちオーディション2027" class="header-image">
   </div>
 
   <div class="form-card">
@@ -84,7 +146,6 @@
   </div>
 
   <script>
-    // ▼ここに新しいLIFF IDとGAS URLを入れてください
     const LIFF_ID = "2012578157-J4tWQCHC";
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzU8XDm2tGy32LN7Ik1P7_jm5sZEJl9N6pFqQsz-VZLptao3NBan4PQSN4az4pl0tzuvw/exec";
 
@@ -150,13 +211,13 @@
       document.getElementById("loading").style.display = "block";
 
       const payload = {
-        displayName: lineDisplayName, // B列：LINE名
-        realName: document.getElementById("realName").value, // C列：本名
-        lineUserId: lineUserId, // D列：LINE ID
-        mixchannelId: document.getElementById("mixchannelId").value, // E列：ミクチャID
-        birthDate: document.getElementById("birthDate").value, // F列：生年月日
-        agency: document.querySelector('input[name="agency"]:checked')?.value, // H列
-        agencyName: document.getElementById("agencyName").value // I列
+        displayName: lineDisplayName, 
+        realName: document.getElementById("realName").value, 
+        lineUserId: lineUserId, 
+        mixchannelId: document.getElementById("mixchannelId").value, 
+        birthDate: document.getElementById("birthDate").value, 
+        agency: document.querySelector('input[name="agency"]:checked')?.value, 
+        agencyName: document.getElementById("agencyName").value 
       };
 
       fetch(GAS_URL, {
