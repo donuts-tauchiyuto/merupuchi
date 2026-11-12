@@ -3,125 +3,161 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>日程調整・お客様情報入力</title>
-  
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
-
+  <title>めるぷちオーディション2027 エントリー</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&display=swap');
-    :root { --primary-pink: #e6005c; --accent-red: #ff3366; --bg-light: #fff5f7; --card-bg: #ffffff; --text-main: #333333; --border-color: #ffccd5; }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background-color: #fafafa; color: var(--text-main); font-family: 'Noto Sans JP', sans-serif; min-height: 100vh; padding: 20px 16px 40px; }
-    .form-card { background: var(--card-bg); border-radius: 16px; padding: 24px 18px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); width: 100%; max-width: 500px; margin: 0 auto; }
-    .header-title { text-align: center; font-size: 1.3rem; font-weight: 900; color: var(--primary-pink); margin-bottom: 24px; }
     
-    /* ★ 完了画面のスタイル */
-    .already-submitted { display: none; text-align: center; padding: 20px 10px; }
-    .already-submitted h2 { color: var(--primary-pink); font-size: 1.2rem; margin-bottom: 16px; }
-    .already-submitted p { color: #555; font-size: 0.95rem; line-height: 1.6; font-weight: 700; }
+    :root { 
+      --primary-pink: #ff52a2; /* めるぷちピンク */
+      --accent-cyan: #00d4d4;  /* めるぷち水色 */
+      --bg-top: #e6fcff;       /* 背景グラデーション上 */
+      --bg-bottom: #ffeaf3;    /* 背景グラデーション下 */
+      --card-bg: #ffffff; 
+      --text-main: #4a4a4a; 
+      --border-color: #bdf2f2; 
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body { 
+      background: linear-gradient(160deg, var(--bg-top) 0%, var(--bg-bottom) 100%); 
+      background-attachment: fixed;
+      color: var(--text-main); 
+      font-family: 'Noto Sans JP', sans-serif; 
+      min-height: 100vh; 
+      padding: 16px 16px 50px; 
+    }
 
-    .profile-box { display: flex; align-items: center; background: #fff0f3; padding: 12px 16px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color); }
-    .profile-box img { width: 48px; height: 48px; border-radius: 50%; margin-right: 12px; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(230, 0, 92, 0.2); }
-    .profile-box span { font-size: 0.95rem; font-weight: 700; color: var(--primary-pink); }
-    .form-group { margin-bottom: 20px; width: 100%; }
-    label { display: flex; align-items: center; font-size: 0.9rem; font-weight: 700; color: #444; margin-bottom: 8px; }
-    .req { color: var(--accent-red); margin-left: 4px; font-weight: 900; }
-    input[type="text"], select { width: 100%; -webkit-appearance: none; appearance: none; background: #ffffff; border: 1px solid #ccc; border-radius: 8px; padding: 12px 14px; color: #333; font-size: 1rem; outline: none; font-family: inherit; box-sizing: border-box; min-height: 48px; }
-    input:focus, select:focus { border-color: var(--primary-pink); box-shadow: 0 0 0 2px rgba(230, 0, 92, 0.1); }
-    select { background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 40px; }
-    .submit-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--primary-pink) 0%, var(--accent-red) 100%); border: none; border-radius: 8px; color: #fff; font-size: 1.1rem; font-weight: 900; cursor: pointer; box-shadow: 0 4px 15px rgba(230, 0, 92, 0.3); margin-top: 16px; }
-    .submit-btn:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
-    .custom-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
-    .custom-modal { background: #fff; width: 85%; max-width: 350px; border-radius: 16px; padding: 24px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-    .custom-modal h3 { color: var(--primary-pink); margin-bottom: 12px; font-size: 1.2rem; }
-    .custom-modal p { font-size: 0.95rem; color: #444; line-height: 1.5; margin-bottom: 20px; }
-    .custom-modal button { background: var(--primary-pink); color: #fff; border: none; padding: 12px 30px; border-radius: 30px; font-weight: bold; font-size: 1rem; cursor: pointer; width: 100%; }
+    /* ▼ 文字のタイトル用スタイル */
+    .hero-header { text-align: center; margin-bottom: 24px; margin-top: 10px; }
+    .badge { 
+      display: inline-block; 
+      background: linear-gradient(90deg, var(--primary-pink), var(--accent-cyan)); 
+      color: #fff; font-size: 0.85rem; font-weight: 900; 
+      padding: 4px 16px; border-radius: 20px; letter-spacing: 1px; margin-bottom: 12px; 
+    }
+    .main-title { 
+      font-size: 1.6rem; font-weight: 900; color: var(--primary-pink); 
+      line-height: 1.3; text-shadow: 0 2px 4px rgba(255, 82, 162, 0.15);
+    }
+
+    /* ▼ フォーム全体のポップな枠線 */
+    .form-card { 
+      background: var(--card-bg); 
+      border: 3px solid var(--accent-cyan); 
+      border-radius: 24px; 
+      padding: 24px 18px; 
+      box-shadow: 0 8px 0 var(--accent-cyan); /* ポップな立体感 */
+      width: 100%; 
+      max-width: 500px; 
+      margin: 0 auto; 
+    }
+
+    .status-bar { text-align: center; background: #fff0f5; color: var(--primary-pink); padding: 12px; border-radius: 12px; margin-bottom: 24px; font-size: 0.9rem; border: 2px dashed var(--primary-pink); font-weight: 900; }
+    .form-group { margin-bottom: 24px; width: 100%; }
+    label { display: flex; align-items: center; font-size: 0.9rem; font-weight: 900; color: #555; margin-bottom: 10px; }
+    
+    .req { background: var(--primary-pink); color: #fff; font-size: 0.65rem; padding: 3px 8px; border-radius: 12px; margin-left: 8px; }
+    .opt { background: var(--accent-cyan); color: #fff; font-size: 0.65rem; padding: 3px 8px; border-radius: 12px; margin-left: 8px; }
+    
+    input[type="text"], input[type="date"] { 
+      width: 100%; max-width: 100%; -webkit-appearance: none; appearance: none; 
+      background: #fafafa; border: 2px solid #e0e0e0; border-radius: 12px; padding: 14px; 
+      color: #333; font-size: 1rem; outline: none; font-family: inherit; font-weight: 700;
+    }
+    input[type="text"]:focus, input[type="date"]:focus { 
+      border-color: var(--accent-cyan); background: #fff; box-shadow: 0 0 0 3px rgba(0, 212, 212, 0.1); 
+    }
+
+    .radio-group { display: flex; gap: 12px; width: 100%; }
+    .radio-btn { 
+      flex: 1; display: flex; align-items: center; justify-content: center; 
+      background: #fafafa; border: 2px solid #e0e0e0; padding: 14px 0; 
+      border-radius: 12px; cursor: pointer; font-size: 0.95rem; color: #666; font-weight: 900; 
+      transition: 0.2s;
+    }
+    .radio-btn input { display: none; }
+    .radio-btn:has(input:checked) { 
+      background: var(--primary-pink); border-color: var(--primary-pink); color: #fff; 
+      box-shadow: 0 4px 10px rgba(255, 82, 162, 0.3);
+    }
+    #agencyNameGroup { display: none; }
+
+    .submit-btn { 
+      width: 100%; padding: 18px; 
+      background: linear-gradient(135deg, #ff7eb3 0%, var(--primary-pink) 100%); 
+      border: none; border-radius: 40px; color: #fff; font-size: 1.2rem; font-weight: 900; 
+      letter-spacing: 2px; cursor: pointer; 
+      box-shadow: 0 6px 15px rgba(255, 82, 162, 0.4); margin-top: 10px; 
+      transition: 0.2s;
+    }
+    .submit-btn:active { transform: translateY(2px); box-shadow: 0 2px 5px rgba(255, 82, 162, 0.4); }
+    
+    .loading { display: none; text-align: center; color: var(--primary-pink); margin-top: 12px; font-size: 0.95rem; font-weight: bold; }
+    .already-submitted { display: none; text-align: center; padding: 30px 10px; }
+    .already-submitted h2 { color: var(--primary-pink); font-size: 1.3rem; margin-bottom: 12px; }
+    .already-submitted p { color: #666; font-size: 0.9rem; line-height: 1.6; font-weight: 700;}
   </style>
 </head>
 <body>
 
-  <div class="form-card">
-    <div class="header-title">日程調整・お客様情報入力</div>
-
-    <!-- ★ すでに回答済みの場合に出す画面 -->
-    <div id="alreadySubmitted" class="already-submitted">
-      <h2>✅ 日程調整は完了しています</h2>
-      <p>日時の変更をご希望の場合は、<br>トークルームのメッセージにて<br>直接担当者へご連絡ください！</p>
-    </div>
-
-    <!-- ★ フォーム全体を囲むコンテナ -->
-    <div id="formContainer">
-      <div class="profile-box">
-        <img id="profileImage" src="https://via.placeholder.com/48" alt="Profile">
-        <span id="profileName">読み込み中...</span>
-      </div>
-
-      <form id="scheduleForm">
-        <div class="form-group">
-          <label>お名前 <span class="req">*</span></label>
-          <input type="text" id="userName" placeholder="例：山田 花子" required>
-        </div>
-
-        <div class="form-group">
-          <label>希望日（平日のみ） <span class="req">*</span></label>
-          <input type="text" id="dateSelect" placeholder="日付を選択してください" readonly required>
-        </div>
-
-        <div class="form-group">
-          <label>希望時間帯 <span class="req">*</span></label>
-          <select id="timeSelect" required>
-            <option value="" disabled selected>選択してください</option>
-            <option value="10:00 〜 11:00">10:00 〜 11:00</option>
-            <option value="17:00 〜 18:00">17:00 〜 18:00</option>
-            <option value="18:00 〜 19:00">18:00 〜 19:00</option>
-          </select>
-        </div>
-
-        <button type="button" class="submit-btn" id="submitBtn" onclick="submitSchedule()">この内容で送信してチャットへ</button>
-      </form>
-    </div>
+  <!-- トップのテキストタイトル（画像なし） -->
+  <div class="hero-header">
+    <div class="badge">オーディション</div>
+    <h1 class="main-title">めるぷち2027<br>エントリー登録</h1>
   </div>
 
-  <div id="customModal" class="custom-modal-overlay">
-    <div class="custom-modal">
-      <h3 id="modalTitle">通知</h3>
-      <p id="modalMessage">メッセージ</p>
-      <button onclick="closeModal()">OK</button>
+  <div class="form-card">
+    <div id="statusMessage" class="status-bar">LINE連携を確認中...🔄</div>
+
+    <form id="auditionForm">
+      <div class="form-group">
+        <label>本名 <span class="req">必須</span></label>
+        <input type="text" id="realName" placeholder="例：山田 花子" required>
+      </div>
+      
+      <div class="form-group">
+        <label>ユーザーID（ミクチャID） <span class="opt">任意</span></label>
+        <input type="text" id="mixchannelId" placeholder="例：12345678">
+      </div>
+
+      <div class="form-group">
+        <label>生年月日 <span class="req">必須</span></label>
+        <input type="date" id="birthDate" required>
+      </div>
+
+      <div class="form-group">
+        <label>事務所所属 <span class="req">必須</span></label>
+        <div class="radio-group">
+          <label class="radio-btn"><input type="radio" name="agency" value="あり" onchange="toggleAgencyInput(true)" required>あり</label>
+          <label class="radio-btn"><input type="radio" name="agency" value="なし" onchange="toggleAgencyInput(false)">なし</label>
+        </div>
+      </div>
+
+      <div class="form-group" id="agencyNameGroup">
+        <label>事務所名 <span class="req">必須</span></label>
+        <input type="text" id="agencyName" placeholder="例：○○プロダクション">
+      </div>
+
+      <button type="button" class="submit-btn" id="submitBtn" onclick="submitData()">エントリー完了</button>
+      <div id="loading" class="loading">送信中...✨</div>
+    </form>
+
+    <div id="alreadySubmitted" class="already-submitted">
+      <h2>✅ すでに回答済みです</h2>
+      <p>ご登録ありがとうございます！<br>エントリー情報はすでに正常に受け付けられております。</p>
     </div>
   </div>
 
   <script>
-    const LIFF_ID = "2012578157-JoAjVpvX"; 
-    // ★★★ ここにデプロイしたGASのURL（/execで終わるもの）を必ず入れてください ★★★
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbycXw6Foku-5RnRz4ThthSx8KRJzY1fRlyiUD1OoF49SLek9bH0t5MwCRJWxVWJVtLA/exec";
+    const LIFF_ID = "2012578157-J4tWQCHC";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzU8XDm2tGy32LN7Ik1P7_jm5sZEJl9N6pFqQsz-VZLptao3NBan4PQSN4az4pl0tzuvw/exec";
+
+    let lineUserId = "";
+    let lineDisplayName = "";
 
     document.addEventListener("DOMContentLoaded", function() {
-      fetch("https://holidays-jp.github.io/api/v1/date.json")
-        .then(response => response.json())
-        .then(holidays => {
-          flatpickr("#dateSelect", {
-            locale: "ja",
-            minDate: "today",
-            disable: [
-              function(date) {
-                if (date.getDay() === 0 || date.getDay() === 6) return true;
-                const y = date.getFullYear();
-                const m = String(date.getMonth() + 1).padStart(2, '0');
-                const d = String(date.getDate()).padStart(2, '0');
-                const formattedDate = `${y}-${m}-${d}`;
-                return holidays.hasOwnProperty(formattedDate);
-              }
-            ]
-          });
-        })
-        .catch(err => {
-          flatpickr("#dateSelect", { locale: "ja", minDate: "today", disable: [ function(date) { return (date.getDay() === 0 || date.getDay() === 6); } ] });
-        });
-
       liff.init({ liffId: LIFF_ID })
         .then(() => {
           if (!liff.isLoggedIn()) {
@@ -130,61 +166,77 @@
           }
           liff.getProfile()
             .then(profile => {
-              document.getElementById("profileImage").src = profile.pictureUrl || "https://via.placeholder.com/48";
-              document.getElementById("profileName").innerText = profile.displayName + " さんとしてログイン中";
-              document.getElementById("userName").value = profile.displayName;
-
-              // ★ 重複チェック：GASに問い合わせる
-              fetch(`${GAS_URL}?userId=${encodeURIComponent(profile.userId)}`)
-                .then(res => res.json())
-                .then(data => {
-                  if (data.hasSchedule) {
-                    document.getElementById("formContainer").style.display = "none";
-                    document.getElementById("alreadySubmitted").style.display = "block";
-                  }
-                })
-                .catch(err => console.error(err));
+              lineUserId = profile.userId;
+              lineDisplayName = profile.displayName;
+              
+              document.getElementById("statusMessage").innerText = "🌸 " + profile.displayName + " 様のエントリー";
+              checkAlreadySubmitted(profile.userId);
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+              document.getElementById("statusMessage").innerText = "❌ プロフィール取得失敗: " + err.message;
+            });
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+          document.getElementById("statusMessage").innerText = "❌ LIFF初期化エラー: " + err.message;
+        });
     });
 
-    function showModal(title, message) {
-      document.getElementById("modalTitle").innerText = title;
-      document.getElementById("modalMessage").innerHTML = message;
-      document.getElementById("customModal").style.display = "flex";
-    }
-    function closeModal() {
-      document.getElementById("customModal").style.display = "none";
+    function toggleAgencyInput(show) {
+      const group = document.getElementById("agencyNameGroup");
+      const input = document.getElementById("agencyName");
+      if (show) {
+        group.style.display = "block";
+        input.required = true;
+      } else {
+        group.style.display = "none";
+        input.required = false;
+        input.value = "";
+      }
     }
 
-    function submitSchedule() {
-      const form = document.getElementById("scheduleForm");
+    function checkAlreadySubmitted(userId) {
+      fetch(`${GAS_URL}?userId=${encodeURIComponent(userId)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.isSubmitted) {
+            document.getElementById("auditionForm").style.display = "none";
+            document.getElementById("statusMessage").style.display = "none";
+            document.getElementById("alreadySubmitted").style.display = "block";
+          }
+        })
+        .catch(() => {});
+    }
+
+    function submitData() {
+      const form = document.getElementById("auditionForm");
       if (!form.checkValidity()) { form.reportValidity(); return; }
 
-      const userName = document.getElementById("userName").value;
-      const dateVal = document.getElementById("dateSelect").value;
-      const timeVal = document.getElementById("timeSelect").value;
       const btn = document.getElementById("submitBtn");
-      
       btn.disabled = true;
-      btn.innerText = "送信中...";
+      document.getElementById("loading").style.display = "block";
 
-      const messageText = `【面談希望日のご連絡】\nお名前：${userName}\n希望日：${dateVal}\n時間帯：${timeVal}`;
+      const payload = {
+        displayName: lineDisplayName, 
+        realName: document.getElementById("realName").value, 
+        lineUserId: lineUserId, 
+        mixchannelId: document.getElementById("mixchannelId").value, 
+        birthDate: document.getElementById("birthDate").value, 
+        agency: document.querySelector('input[name="agency"]:checked')?.value, 
+        agencyName: document.getElementById("agencyName").value 
+      };
+
+      fetch(GAS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify(payload)
+      });
 
       if (liff.isInClient()) {
-        liff.sendMessages([{ type: 'text', text: messageText }])
+        liff.sendMessages([{ type: 'text', text: '回答しました！' }])
           .then(() => liff.closeWindow())
-          .catch(() => {
-            showModal("エラー", "メッセージの送信に失敗しました。");
-            btn.disabled = false;
-            btn.innerText = "この内容で送信してチャットへ";
-          });
+          .catch(() => liff.closeWindow());
       } else {
-        showModal("ブラウザで開かれています", `テスト環境のためチャット送信はスキップされました。<br><br>【送信内容】<br>${dateVal} ${timeVal}`);
-        btn.disabled = false;
-        btn.innerText = "この内容で送信してチャットへ";
+        window.close();
       }
     }
   </script>
