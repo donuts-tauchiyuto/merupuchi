@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>めるぷちオーディション2027 エントリーフォーム</title>
+  <title>めるぷちオーディション エントリーフォーム</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&display=swap');
@@ -38,7 +38,7 @@
 
   <div class="hero-header">
     <div class="badge">第14回</div>
-    <h1 class="main-title">めるぷちオーディション2027<br>エントリーフォーム</h1>
+    <h1 class="main-title">るぷちオーディション2027<br>エントリー登録</h1>
   </div>
 
   <div class="form-card">
@@ -71,14 +71,6 @@
       <div class="form-group" id="agencyNameGroup">
         <label>事務所名 <span class="req">必須</span></label>
         <input type="text" id="agencyName" placeholder="例：○○プロダクション">
-      </div>
-
-      <div class="form-group">
-        <label>許諾の有無 <span class="req">必須</span></label>
-        <div class="radio-group">
-          <label class="radio-btn"><input type="radio" name="permission" value="あり" required>あり</label>
-          <label class="radio-btn"><input type="radio" name="permission" value="なし">なし</label>
-        </div>
       </div>
 
       <button type="button" class="submit-btn" id="submitBtn" onclick="submitData()">エントリー完了</button>
@@ -164,8 +156,7 @@
         mixchannelId: document.getElementById("mixchannelId").value, // E列：ミクチャID
         birthDate: document.getElementById("birthDate").value, // F列：生年月日
         agency: document.querySelector('input[name="agency"]:checked')?.value, // H列
-        agencyName: document.getElementById("agencyName").value, // I列
-        permission: document.querySelector('input[name="permission"]:checked')?.value // J列
+        agencyName: document.getElementById("agencyName").value // I列
       };
 
       fetch(GAS_URL, {
