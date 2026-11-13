@@ -120,4 +120,145 @@
           </select>
         </div>
 
-        <button type="button" class="submit
+        <button type="button" class="submit-btn" id="submitBtn" onclick="submitSchedule()">日程を送信する</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="customModal" class="custom-modal-overlay">
+    <div class="custom-modal">
+      <h3 id="modalTitle">通知</h3>
+      <p id="modalMessage">メッセージ</p>
+      <button onclick="closeModal()">OK</button>
+    </div>
+  </div>
+
+  <script>
+    const LIFF_ID = "2012578157-JoAjVpvX"; 
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzU8XDm2tGy32LN7Ik1P7_jm5sZEJl9N6pFqQsz-VZLptao3NBan4PQSN4az4pl0tzuvw/exec";
+
+    // ★ カレンダーで日付が選ばれた時に動くプログラム（火曜日なら10:30を消す）
+    function updateTimeSelect(selectedDates) {
+      const timeSelect = document.getElementById("timeSelect");
+      const currentVal = timeSelect.value; // 今選ばれている時間帯を記憶しておく
+      
+      // 一旦プルダウンの中身を「選択してください」にリセットする
+      timeSelect.innerHTML = '<option value="" disabled selected>選択してください</option>';
+      
+      if (selectedDates && selectedDates.length > 0) {
+        const isTuesday = selectedDates[0].getDay() === 2; // 日(0) 月(1) 火(2)
+        
+        // 火曜日じゃなければ 10:30 を追加
+        if (!isTuesday) {
+          timeSelect.innerHTML += '<option value="10:30 〜 11:30">10:30 〜 11:30</option>';
+        }
+        
+        // 18:00と19:00は毎日追加
+        timeSelect.innerHTML += '<option value="18:00 〜 19:00">18:00 〜 19:00</option>';
+        timeSelect.innerHTML += '<option value="19:00 〜 20:00">19:00 〜 20:00</option>';
+
+        // もし10:30を選んだ状態で火曜日に変えたらリセットさせ、それ以外の時間なら選択状態を保持する
+        if (currentVal !== "10:30 〜 11:30" && currentVal !== "") {
+          timeSelect.value = currentVal;
+        }
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      fetch("https://holidays-jp.github.io/api/v1/date.json")
+        .then(response => response.json())
+        .then(holidays => {
+          flatpickr("#dateSelect", {
+            locale: "ja",
+            minDate: "2026-11-16", 
+            disable: [
+              function(date) {
+                if (date.getDay() === 0 || date.getDay() === 6) return true; // 土日除外
+                const y = date.getFullYear();
+                const m = String(date.getMonth() + 1).padStart(2, '0');
+                const d = String(date.getDate()).padStart(2, '0');
+                const formattedDate = `${y}-${m}-${d}`;
+                return holidays.hasOwnProperty(formattedDate); // 祝日除外
+              }
+            ],
+            onChange: function(selectedDates) {
+              updateTimeSelect(selectedDates); // ★ 日付変更時にプログラム発動
+            }
+          });
+        })
+        .catch(err => {
+          flatpickr("#dateSelect", { 
+            locale: "ja", 
+            minDate: "2026-11-16", 
+            disable: [ function(date) { return (date.getDay() === 0 || date.getDay() === 6); } ],
+            onChange: function(selectedDates) {
+              updateTimeSelect(selectedDates); // ★ 日付変更時にプログラム発動
+            }
+          });
+        });
+
+      liff.init({ liffId: LIFF_ID })
+        .then(() => {
+          if (!liff.isLoggedIn()) {
+            liff.login();
+            return;
+          }
+          liff.getProfile()
+            .then(profile => {
+              document.getElementById("profileImage").src = profile.pictureUrl || "https://via.placeholder.com/48";
+              document.getElementById("profileName").innerText = profile.displayName + " さん";
+
+              fetch(`${GAS_URL}?userId=${encodeURIComponent(profile.userId)}`)
+                .then(res => res.json())
+                .then(data => {
+                  if (data.hasSchedule) {
+                    document.getElementById("formContainer").style.display = "none";
+                    document.getElementById("alreadySubmitted").style.display = "block";
+                  }
+                })
+                .catch(err => console.error(err));
+            })
+            .catch(err => console.error(err));
+        })
+        .catch(err => console.error(err));
+    });
+
+    function showModal(title, message) {
+      document.getElementById("modalTitle").innerText = title;
+      document.getElementById("modalMessage").innerHTML = message;
+      document.getElementById("customModal").style.display = "flex";
+    }
+    function closeModal() {
+      document.getElementById("customModal").style.display = "none";
+    }
+
+    function submitSchedule() {
+      const form = document.getElementById("scheduleForm");
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+
+      const dateVal = document.getElementById("dateSelect").value;
+      const timeVal = document.getElementById("timeSelect").value;
+      const btn = document.getElementById("submitBtn");
+      
+      btn.disabled = true;
+      btn.innerText = "送信中...✨";
+
+      const messageText = `レク希望日のご連絡\n希望日：${dateVal}\n時間帯：${timeVal}`;
+
+      if (liff.isInClient()) {
+        liff.sendMessages([{ type: 'text', text: messageText }])
+          .then(() => liff.closeWindow())
+          .catch(() => {
+            showModal("エラー", "メッセージの送信に失敗しました。");
+            btn.disabled = false;
+            btn.innerText = "日程を送信する";
+          });
+      } else {
+        showModal("ブラウザで開かれています", `テスト環境のためチャット送信はスキップされました。<br><br>【送信内容】<br>${dateVal} ${timeVal}`);
+        btn.disabled = false;
+        btn.innerText = "日程を送信する";
+      }
+    }
+  </script>
+</body>
+</html>
