@@ -14,8 +14,8 @@
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&display=swap');
     
     :root { 
-      --primary-pink: #ff52a2; /* めるぷちピンク */
-      --accent-cyan: #00d4d4;  /* めるぷち水色 */
+      --primary-pink: #ff52a2; 
+      --accent-cyan: #00d4d4;  
       --bg-top: #e6fcff; 
       --bg-bottom: #ffeaf3; 
       --card-bg: #ffffff; 
@@ -34,7 +34,6 @@
       padding: 20px 16px 50px; 
     }
 
-    /* ▼ テキストタイトル用のスタイル */
     .hero-header { text-align: center; margin-bottom: 24px; padding-top: 10px; }
     .badge { 
       display: inline-block; 
@@ -48,7 +47,6 @@
       line-height: 1.4; text-shadow: 0 2px 5px rgba(255, 82, 162, 0.15);
     }
 
-    /* ▼ フォーム全体のポップな枠線 */
     .form-card { 
       background: var(--card-bg); 
       border: 3px solid var(--accent-cyan); 
@@ -60,7 +58,6 @@
       margin: 0 auto; 
     }
     
-    /* ★ 完了画面のスタイル */
     .already-submitted { display: none; text-align: center; padding: 20px 10px; }
     .already-submitted h2 { color: var(--primary-pink); font-size: 1.2rem; margin-bottom: 16px; }
     .already-submitted p { color: #555; font-size: 0.95rem; line-height: 1.6; font-weight: 700; }
@@ -90,20 +87,17 @@
 </head>
 <body>
 
-  <!-- トップタイトル -->
   <div class="hero-header">
     <div class="badge">オーディション2027</div>
     <h1 class="main-title">レク日程のご登録</h1>
   </div>
 
   <div class="form-card">
-    <!-- ★ すでに回答済みの場合に出す画面 -->
     <div id="alreadySubmitted" class="already-submitted">
       <h2>✅ 日程調整は完了しています</h2>
       <p>日時の変更をご希望の場合は、<br>トークルームのメッセージにて<br>直接担当者へご連絡ください！</p>
     </div>
 
-    <!-- ★ フォーム全体を囲むコンテナ -->
     <div id="formContainer">
       <div class="profile-box">
         <img id="profileImage" src="https://via.placeholder.com/48" alt="Profile">
@@ -145,13 +139,12 @@
     const GAS_URL = "https://script.google.com/macros/s/AKfycbzU8XDm2tGy32LN7Ik1P7_jm5sZEJl9N6pFqQsz-VZLptao3NBan4PQSN4az4pl0tzuvw/exec";
 
     document.addEventListener("DOMContentLoaded", function() {
-      // 祝日データを取得し、土日祝＋過去を除外するカレンダー設定
       fetch("https://holidays-jp.github.io/api/v1/date.json")
         .then(response => response.json())
         .then(holidays => {
           flatpickr("#dateSelect", {
             locale: "ja",
-            minDate: "today",
+            minDate: "2026-11-16", // ★ ここを「today」から「11月16日以降」に変更しました！
             disable: [
               function(date) {
                 if (date.getDay() === 0 || date.getDay() === 6) return true; // 土日除外
@@ -165,7 +158,7 @@
           });
         })
         .catch(err => {
-          flatpickr("#dateSelect", { locale: "ja", minDate: "today", disable: [ function(date) { return (date.getDay() === 0 || date.getDay() === 6); } ] });
+          flatpickr("#dateSelect", { locale: "ja", minDate: "2026-11-16", disable: [ function(date) { return (date.getDay() === 0 || date.getDay() === 6); } ] });
         });
 
       liff.init({ liffId: LIFF_ID })
@@ -179,7 +172,6 @@
               document.getElementById("profileImage").src = profile.pictureUrl || "https://via.placeholder.com/48";
               document.getElementById("profileName").innerText = profile.displayName + " さん";
 
-              // ★ 重複チェック：すでに日程登録済み（K列に文字がある）ならフォームを隠す
               fetch(`${GAS_URL}?userId=${encodeURIComponent(profile.userId)}`)
                 .then(res => res.json())
                 .then(data => {
@@ -215,7 +207,6 @@
       btn.disabled = true;
       btn.innerText = "送信中...✨";
 
-      // 裏側でLINEトークに自動送信させるテキスト
       const messageText = `レク希望日のご連絡\n希望日：${dateVal}\n時間帯：${timeVal}`;
 
       if (liff.isInClient()) {
