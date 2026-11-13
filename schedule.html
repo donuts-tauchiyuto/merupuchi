@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>めるぷちオーディション2027 エントリー</title>
+  <title>めるぷちオーディション レク日程調整</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&display=swap');
@@ -15,7 +15,6 @@
       --bg-bottom: #ffeaf3;    /* 背景グラデーション下 */
       --card-bg: #ffffff; 
       --text-main: #4a4a4a; 
-      --border-color: #bdf2f2; 
     }
     
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -39,7 +38,7 @@
       box-shadow: 0 3px 8px rgba(0, 212, 212, 0.2);
     }
     .main-title { 
-      font-size: 1.7rem; font-weight: 900; color: var(--primary-pink); 
+      font-size: 1.5rem; font-weight: 900; color: var(--primary-pink); 
       line-height: 1.4; text-shadow: 0 2px 5px rgba(255, 82, 162, 0.15);
     }
 
@@ -56,34 +55,22 @@
     }
 
     .status-bar { text-align: center; background: #fff0f5; color: var(--primary-pink); padding: 12px; border-radius: 12px; margin-bottom: 24px; font-size: 0.9rem; border: 2px dashed var(--primary-pink); font-weight: 900; }
+    
     .form-group { margin-bottom: 24px; width: 100%; }
     label { display: flex; align-items: center; font-size: 0.9rem; font-weight: 900; color: #555; margin-bottom: 10px; }
-    
     .req { background: var(--primary-pink); color: #fff; font-size: 0.65rem; padding: 3px 8px; border-radius: 12px; margin-left: 8px; }
-    .opt { background: var(--accent-cyan); color: #fff; font-size: 0.65rem; padding: 3px 8px; border-radius: 12px; margin-left: 8px; }
     
-    input[type="text"], input[type="date"] { 
+    input[type="text"], input[type="date"], input[type="time"] { 
       width: 100%; max-width: 100%; -webkit-appearance: none; appearance: none; 
       background: #fafafa; border: 2px solid #e0e0e0; border-radius: 12px; padding: 14px; 
       color: #333; font-size: 1rem; outline: none; font-family: inherit; font-weight: 700;
     }
-    input[type="text"]:focus, input[type="date"]:focus { 
+    input[type="text"]:focus, input[type="date"]:focus, input[type="time"]:focus { 
       border-color: var(--accent-cyan); background: #fff; box-shadow: 0 0 0 3px rgba(0, 212, 212, 0.1); 
     }
 
-    .radio-group { display: flex; gap: 12px; width: 100%; }
-    .radio-btn { 
-      flex: 1; display: flex; align-items: center; justify-content: center; 
-      background: #fafafa; border: 2px solid #e0e0e0; padding: 14px 0; 
-      border-radius: 12px; cursor: pointer; font-size: 0.95rem; color: #666; font-weight: 900; 
-      transition: 0.2s;
-    }
-    .radio-btn input { display: none; }
-    .radio-btn:has(input:checked) { 
-      background: var(--primary-pink); border-color: var(--primary-pink); color: #fff; 
-      box-shadow: 0 4px 10px rgba(255, 82, 162, 0.3);
-    }
-    #agencyNameGroup { display: none; }
+    .time-flex { display: flex; align-items: center; gap: 10px; }
+    .time-flex span { font-weight: 900; color: var(--primary-pink); }
 
     .submit-btn { 
       width: 100%; padding: 18px; 
@@ -96,67 +83,46 @@
     .submit-btn:active { transform: translateY(2px); box-shadow: 0 2px 5px rgba(255, 82, 162, 0.4); }
     
     .loading { display: none; text-align: center; color: var(--primary-pink); margin-top: 16px; font-size: 0.95rem; font-weight: bold; line-height: 1.5; }
-    .already-submitted { display: none; text-align: center; padding: 30px 10px; }
-    .already-submitted h2 { color: var(--primary-pink); font-size: 1.3rem; margin-bottom: 12px; }
-    .already-submitted p { color: #666; font-size: 0.9rem; line-height: 1.6; font-weight: 700;}
   </style>
 </head>
 <body>
 
-  <!-- トップタイトル -->
   <div class="hero-header">
     <div class="badge">オーディション2027</div>
-    <h1 class="main-title">めるぷち<br>エントリー登録</h1>
+    <h1 class="main-title">面談日程のご登録</h1>
   </div>
 
   <div class="form-card">
     <div id="statusMessage" class="status-bar">LINE連携を確認中...🔄</div>
 
-    <form id="auditionForm">
+    <form id="scheduleForm">
       <div class="form-group">
-        <label>本名 <span class="req">必須</span></label>
+        <label>お名前（フルネーム） <span class="req">必須</span></label>
         <input type="text" id="realName" placeholder="例：山田 花子" required>
       </div>
-      
+
       <div class="form-group">
-        <label>ユーザーID（ミクチャID） <span class="opt">任意</span></label>
-        <input type="text" id="mixchannelId" placeholder="例：12345678">
+        <label>面談希望日 <span class="req">必須</span></label>
+        <input type="date" id="hopeDate" required>
       </div>
 
       <div class="form-group">
-        <label>生年月日 <span class="req">必須</span></label>
-        <input type="date" id="birthDate" required>
-      </div>
-
-      <div class="form-group">
-        <label>事務所所属 <span class="req">必須</span></label>
-        <div class="radio-group">
-          <label class="radio-btn"><input type="radio" name="agency" value="あり" onchange="toggleAgencyInput(true)" required>あり</label>
-          <label class="radio-btn"><input type="radio" name="agency" value="なし" onchange="toggleAgencyInput(false)">なし</label>
+        <label>希望時間帯 <span class="req">必須</span></label>
+        <div class="time-flex">
+          <input type="time" id="startTime" required>
+          <span>〜</span>
+          <input type="time" id="endTime" required>
         </div>
       </div>
 
-      <div class="form-group" id="agencyNameGroup">
-        <label>事務所名 <span class="req">必須</span></label>
-        <input type="text" id="agencyName" placeholder="例：○○プロダクション">
-      </div>
-
-      <button type="button" class="submit-btn" id="submitBtn" onclick="submitData()">エントリー完了</button>
+      <button type="button" class="submit-btn" id="submitBtn" onclick="submitSchedule()">送信する</button>
       <div id="loading" class="loading">送信中...✨</div>
     </form>
-
-    <div id="alreadySubmitted" class="already-submitted">
-      <h2>✅ すでに回答済みです</h2>
-      <p>ご登録ありがとうございます！<br>エントリー情報はすでに正常に受け付けられております。</p>
-    </div>
   </div>
 
   <script>
-    const LIFF_ID = "2012578157-J4tWQCHC";
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbzU8XDm2tGy32LN7Ik1P7_jm5sZEJl9N6pFqQsz-VZLptao3NBan4PQSN4az4pl0tzuvw/exec";
-
-    let lineUserId = "";
-    let lineDisplayName = "";
+    // ▼ ここに【日程調整用】の新しいLIFF IDを入れてください
+    const LIFF_ID = "2012578157-JoAjVpvX";
 
     document.addEventListener("DOMContentLoaded", function() {
       liff.init({ liffId: LIFF_ID })
@@ -167,49 +133,19 @@
           }
           liff.getProfile()
             .then(profile => {
-              lineUserId = profile.userId;
-              lineDisplayName = profile.displayName;
-              
-              document.getElementById("statusMessage").innerText = "🌸 " + profile.displayName + " 様のエントリー";
-              checkAlreadySubmitted(profile.userId);
+              document.getElementById("statusMessage").innerText = "🌸 " + profile.displayName + " 様の日程調整";
             })
             .catch(err => {
-              document.getElementById("statusMessage").innerText = "❌ プロフィール取得失敗: " + err.message;
+              document.getElementById("statusMessage").innerText = "❌ プロフィール取得失敗";
             });
         })
         .catch(err => {
-          document.getElementById("statusMessage").innerText = "❌ LIFF初期化エラー: " + err.message;
+          document.getElementById("statusMessage").innerText = "❌ LIFF初期化エラー";
         });
     });
 
-    function toggleAgencyInput(show) {
-      const group = document.getElementById("agencyNameGroup");
-      const input = document.getElementById("agencyName");
-      if (show) {
-        group.style.display = "block";
-        input.required = true;
-      } else {
-        group.style.display = "none";
-        input.required = false;
-        input.value = "";
-      }
-    }
-
-    function checkAlreadySubmitted(userId) {
-      fetch(`${GAS_URL}?userId=${encodeURIComponent(userId)}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.isSubmitted) {
-            document.getElementById("auditionForm").style.display = "none";
-            document.getElementById("statusMessage").style.display = "none";
-            document.getElementById("alreadySubmitted").style.display = "block";
-          }
-        })
-        .catch(() => {});
-    }
-
-    function submitData() {
-      const form = document.getElementById("auditionForm");
+    function submitSchedule() {
+      const form = document.getElementById("scheduleForm");
       if (!form.checkValidity()) { form.reportValidity(); return; }
 
       const btn = document.getElementById("submitBtn");
@@ -218,36 +154,33 @@
       loading.style.display = "block";
       loading.innerText = "送信中...✨";
 
-      const payload = {
-        displayName: lineDisplayName, 
-        realName: document.getElementById("realName").value, 
-        lineUserId: lineUserId, 
-        mixchannelId: document.getElementById("mixchannelId").value, 
-        birthDate: document.getElementById("birthDate").value, 
-        agency: document.querySelector('input[name="agency"]:checked')?.value, 
-        agencyName: document.getElementById("agencyName").value 
-      };
+      const name = document.getElementById("realName").value;
+      const dateVal = document.getElementById("hopeDate").value; 
+      const startT = document.getElementById("startTime").value; 
+      const endT = document.getElementById("endTime").value; 
 
-      fetch(GAS_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain" },
-        body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(data => {
-        loading.innerText = "送信完了しました！🌸\n（画面を閉じてください）";
-        if (liff.isInClient()) {
-          liff.sendMessages([{ type: 'text', text: '回答しました！' }])
-            .then(() => liff.closeWindow())
-            .catch(() => liff.closeWindow());
-        } else {
-          setTimeout(() => { window.close(); }, 1500);
-        }
-      })
-      .catch(err => {
-        loading.innerText = "❌ 通信エラーが発生しました。GASのURLや権限設定を確認してください。";
-        btn.disabled = false;
-      });
+      // 日付をGASが読み取れるフォーマット（YYYY年MM月DD日）に変換
+      const d = new Date(dateVal);
+      const yyyy = d.getFullYear();
+      const mm = d.getMonth() + 1;
+      const dd = d.getDate();
+
+      // LINEに送信するテキスト（※GASの抽出プログラムと一言一句合わせる必要があります）
+      const messageText = `面談希望日のご連絡\nお名前：${name}\n希望日：${yyyy}年${mm}月${dd}日\n時間帯：${startT}〜${endT}`;
+
+      if (liff.isInClient()) {
+        liff.sendMessages([{ type: 'text', text: messageText }])
+          .then(() => {
+            loading.innerText = "送信完了しました！🌸\n（画面を閉じてください）";
+            liff.closeWindow();
+          })
+          .catch((err) => {
+            loading.innerText = "❌ 送信エラーが発生しました。権限設定を確認してください。";
+            btn.disabled = false;
+          });
+      } else {
+        loading.innerText = "送信完了しました！🌸\n（PCブラウザ等ではLINEに自動送信されません）";
+      }
     }
   </script>
 </body>
