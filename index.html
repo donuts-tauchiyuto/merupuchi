@@ -26,16 +26,21 @@
       color: var(--text-main); 
       font-family: 'Noto Sans JP', sans-serif; 
       min-height: 100vh; 
-      padding: 16px 16px 50px; 
+      padding: 20px 16px 50px; 
     }
 
-    /* ▼ 追加：トップ画像のスタイル */
-    .hero-header { text-align: center; margin-bottom: 20px; }
-    .header-image {
-      width: 100%;
-      max-width: 500px;
-      border-radius: 20px;
-      box-shadow: 0 6px 15px rgba(0, 212, 212, 0.15);
+    /* ▼ テキストタイトル用のスタイル */
+    .hero-header { text-align: center; margin-bottom: 24px; padding-top: 10px; }
+    .badge { 
+      display: inline-block; 
+      background: linear-gradient(90deg, var(--primary-pink), var(--accent-cyan)); 
+      color: #fff; font-size: 0.85rem; font-weight: 900; 
+      padding: 6px 18px; border-radius: 20px; letter-spacing: 1px; margin-bottom: 12px; 
+      box-shadow: 0 3px 8px rgba(0, 212, 212, 0.2);
+    }
+    .main-title { 
+      font-size: 1.7rem; font-weight: 900; color: var(--primary-pink); 
+      line-height: 1.4; text-shadow: 0 2px 5px rgba(255, 82, 162, 0.15);
     }
 
     /* ▼ フォーム全体のポップな枠線 */
@@ -43,8 +48,8 @@
       background: var(--card-bg); 
       border: 3px solid var(--accent-cyan); 
       border-radius: 24px; 
-      padding: 24px 18px; 
-      box-shadow: 0 8px 0 var(--accent-cyan); /* ポップな立体感 */
+      padding: 28px 20px; 
+      box-shadow: 0 8px 0 var(--accent-cyan); 
       width: 100%; 
       max-width: 500px; 
       margin: 0 auto; 
@@ -90,7 +95,7 @@
     }
     .submit-btn:active { transform: translateY(2px); box-shadow: 0 2px 5px rgba(255, 82, 162, 0.4); }
     
-    .loading { display: none; text-align: center; color: var(--primary-pink); margin-top: 12px; font-size: 0.95rem; font-weight: bold; }
+    .loading { display: none; text-align: center; color: var(--primary-pink); margin-top: 16px; font-size: 0.95rem; font-weight: bold; line-height: 1.5; }
     .already-submitted { display: none; text-align: center; padding: 30px 10px; }
     .already-submitted h2 { color: var(--primary-pink); font-size: 1.3rem; margin-bottom: 12px; }
     .already-submitted p { color: #666; font-size: 0.9rem; line-height: 1.6; font-weight: 700;}
@@ -98,9 +103,10 @@
 </head>
 <body>
 
-  <!-- トップ画像 -->
+  <!-- トップタイトル -->
   <div class="hero-header">
-    <img src="めるぷち2027オーディション案内.png" alt="めるぷちオーディション2027" class="header-image">
+    <div class="badge">オーディション2027</div>
+    <h1 class="main-title">めるぷち<br>エントリー登録</h1>
   </div>
 
   <div class="form-card">
@@ -207,8 +213,10 @@
       if (!form.checkValidity()) { form.reportValidity(); return; }
 
       const btn = document.getElementById("submitBtn");
+      const loading = document.getElementById("loading");
       btn.disabled = true;
-      document.getElementById("loading").style.display = "block";
+      loading.style.display = "block";
+      loading.innerText = "送信中...✨";
 
       const payload = {
         displayName: lineDisplayName, 
@@ -224,15 +232,22 @@
         method: "POST",
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        loading.innerText = "送信完了しました！🌸\n（画面を閉じてください）";
+        if (liff.isInClient()) {
+          liff.sendMessages([{ type: 'text', text: '回答しました！' }])
+            .then(() => liff.closeWindow())
+            .catch(() => liff.closeWindow());
+        } else {
+          setTimeout(() => { window.close(); }, 1500);
+        }
+      })
+      .catch(err => {
+        loading.innerText = "❌ 通信エラーが発生しました。GASのURLや権限設定を確認してください。";
+        btn.disabled = false;
       });
-
-      if (liff.isInClient()) {
-        liff.sendMessages([{ type: 'text', text: '回答しました！' }])
-          .then(() => liff.closeWindow())
-          .catch(() => liff.closeWindow());
-      } else {
-        window.close();
-      }
     }
   </script>
 </body>
